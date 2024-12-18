@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kick Player</title>
+</head>
+<body>
+    <h1>Kick Player</h1>
+    <form id="kickForm">
+        <label for="playerName">Enter Player Name:</label>
+        <input type="text" id="playerName" name="playerName" required>
+        <button type="submit">Kick Player</button>
+    </form>
+
+    <div id="responseMessage"></div>
+
+    <script>
+        document.getElementById("kickForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const playerName = document.getElementById("playerName").value;
+            const responseMessage = document.getElementById("responseMessage");
+
+            if (playerName.trim() === "") {
+                responseMessage.textContent = "Player name cannot be empty.";
+                return;
+            }
+
+            // Sending request to the backend server to kick the player
+            fetch("https://your-server-url.com/kick-player", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ playerName: playerName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    responseMessage.textContent = "Player has been successfully kicked!";
+                } else {
+                    responseMessage.textContent = "Error: " + data.message;
+                }
+            })
+            .catch(error => {
+                responseMessage.textContent = "Failed to communicate with the server.";
+            });
+        });
+    </script>
+</body>
+</html>
